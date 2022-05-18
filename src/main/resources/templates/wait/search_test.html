@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+
+    <script type="text/javascript">
+        window.onload = function() {
+            var httpRequest;
+            // 호출 버튼을 클릭하였을 때, 데이터를 요청하고 받아오는 Ajax 구현 부분
+            document.getElementById("button-search").addEventListener('click', () => {
+                httpRequest = new XMLHttpRequest();
+                httpRequest.onreadystatechange = () => {
+                    if (httpRequest.readyState === XMLHttpRequest.DONE) {
+                        if (httpRequest.status === 200) {
+                            document.getElementById("searchTable").innerHTML = httpRequest.response;
+                        } else {
+                            alert('Request Error!');
+                        }
+                    }
+                };
+                httpRequest.open('GET', '/get/search');
+                httpRequest.send();
+            });
+        }
+    </script>
+</head>
+<body>
+<!-- Search widget-->
+<div class="card mb-4">
+    <div class="card-header">Search</div>
+        <input class="form-control" type="text" placeholder="Enter search term..."/>
+            <button class="btn btn-primary" id="button-search">검색</button><br><br>
+            <table id="searchTable" th:fragment="searchTable">
+                <tr>
+                    <th>책 번호</th>
+                    <th>책 이름</th>
+                </tr>
+                <tr th:each="book : ${bookSearch}">
+                    <td th:text="${book.key}" />
+                    <td th:text="${book.value}" />
+                </tr>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+
+</body>
+</html>

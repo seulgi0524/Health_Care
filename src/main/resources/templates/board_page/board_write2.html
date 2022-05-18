@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script
+          src="https://code.jquery.com/jquery-2.2.4.js"
+          integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
+          crossorigin="anonymous"></script>
+  <script type="text/javascript" src="/smarteditor2/js/HuskyEZCreator.js" charset="utf-8"></script>
+  <script>
+    function save(){
+      oEditors.getById["contents"].exec("UPDATE_CONTENTS_FIELD", []);
+      //스마트 에디터 값을 텍스트컨텐츠로 전달
+      var content = document.getElementById("contents").value;
+      var title = document.getElementById("title").value;
+      var thumbnail = document.getElementById("thumbnail").files[0];
+
+
+      //자바 메소드 호출
+      if (content == "<p>&nbsp;</p>" || content == null){
+        alert("내용을 입력해 주세요.");
+        return;
+      }
+
+      let boardData = new FormData();
+      boardData.append("title",title);
+      boardData.append("contents",content);
+      boardData.append("thumbnail",thumbnail);
+
+      $.ajax({
+        type:'post',
+        url : "board_page2",
+        data : boardData,
+        enctype : "multipart/form-data",
+        processData : false,
+        contentType : false,
+        cache : false,
+        dataType : 'text',
+        success : function (result){
+          alert(result)
+        },
+        error : function (){
+          alert("실패")
+        }
+      })
+
+
+
+
+      // $.post('/Genpic/Event/EventInsert',{ title: title, contents: content ,thumbnail : thumbnail }, function(data) {
+      //   $('.result').html(data);
+      // });
+
+      //저장유무 확인 알럿
+
+      // 값을 불러올 땐 document.get으로 받아오기
+      return;
+    }
+  </script>
+</head>
+<body>
+<form action="board_page2" method="POST" enctype="multipart/form-data">
+<!--<div>
+  <label>Id : </label><input th:value="${Id}" name="strLoginId"  id="Id" class="form-control">
+</div>-->
+<div>
+  <label>Tt : </label><input class="form-control" id="title" name="title" type="text"><br>
+  <label>Tn : </label><input class="form-control" id="thumbnail" name="thumbnail" type="file">
+</div>
+<div>
+  <textarea id="contents" name="contents" rows="10" cols="100" style="width: 100%;"></textarea>
+  <script id="smartEditor" type="text/javascript">
+    var oEditors=[];
+    nhn.husky.EZCreator.createInIFrame({
+      oAppRef : oEditors,
+      elPlaceHolder : "contents",
+      sSkinURI: "../smarteditor2/SmartEditor2Skin.html",
+      fCreator: "createSEditor2"
+    });
+  </script>
+</div>
+<div id="se2_sample" style="margin:10px 0;">
+  <input type='submit' value="업로드"><br>
+  <input type="button" onclick="save();" value="본문 내용 가져오기">
+</div>
+</form>
+</body>
+</html>
